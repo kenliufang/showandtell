@@ -2,7 +2,7 @@ workspace(name = "im2txt")
 
 local_repository(
   name = "org_tensorflow",
-  path = "/home/fang/tensorflow/",
+  path = "/home/ubuntu/tensorflow",
 )
 
 load('@org_tensorflow//tensorflow:workspace.bzl', 'tf_workspace')

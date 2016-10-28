@@ -4,6 +4,11 @@ licenses(["notice"])  # Apache 2.0
 
 exports_files(["LICENSE"])
 
+#load("@protobuf//:protobuf.bzl", "py_proto_library")
+load("//im2txt:protobuf.bzl", "py_proto_library")
+#load("//im2txt:protobuf.bzl", "lf_cc_proto_library")
+
+
 package_group(
     name = "internal",
     packages = [
@@ -92,5 +97,35 @@ py_binary(
         ":inference_wrapper",
         "//im2txt/inference_utils:caption_generator",
         "//im2txt/inference_utils:vocabulary",
+    ],
+)
+
+py_proto_library(
+    name = "server_proto",
+    srcs = ["server.proto"],
+    default_runtime="@protobuf//:protobuf_python",
+    protoc="@protobuf//:protoc",
+    rpc_plugin="@grpc//:grpc_python_plugin"
+)
+
+py_binary(
+    name = "inference_server",
+    srcs = ["inference_server.py"],
+    srcs_version = "PY2AND3",
+    deps = [
+        ":configuration",
+        ":inference_wrapper",
+        ":server_proto",
+        "//im2txt/inference_utils:caption_generator",
+        "//im2txt/inference_utils:vocabulary",
+    ],
+)
+
+py_binary(
+    name = "inference_client",
+    srcs = ["inference_client.py"],
+    srcs_version = "PY2AND3",
+    deps = [
+        ":server_proto",
     ],
 )
